@@ -1,0 +1,32 @@
+Generate a Java 25 project using Maven with the following attributes and features:
+
+It will run on a Raspberry Pi 4
+It will take periodic readings from a Bosch BME-680 environmental sensor (every one minute by default).
+It will write the readings in CSV format to a local file with a timestamp.
+It will make readings available on an HTTP server in JSON format.
+
+The following libraries may be considered:
+
+<dependency>
+    <groupId>com.opencsv</groupId>
+    <artifactId>opencsv</artifactId>
+    <version>5.12.0</version>
+    <scope>compile</scope>
+</dependency>
+
+<dependency>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-server</artifactId>
+    <version>12.0.11</version>
+</dependency>
+
+<dependency>
+    <groupId>com.pi4j</groupId>
+    <artifactId>pi4j-core</artifactId>
+    <version>2.6.0</version> <!-- Use latest version -->
+</dependency>
+<dependency>
+    <groupId>com.pi4j</groupId>
+    <artifactId>pi4j-plugin-gpiod</artifactId>
+    <version>2.6.0</version>
+</dependency>

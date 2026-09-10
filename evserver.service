@@ -1,0 +1,15 @@
+[Unit]
+Description=EV Server BME680 reader
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/evserver
+ExecStart=/usr/bin/java -jar /opt/evserver/evserver.jar --data-dir /var/lib/evserver/data
+Restart=on-failure
+RestartSec=10
+User=pi
+Environment=JAVA_HOME=/usr/lib/jvm/java-25-openjdk-arm64
+
+[Install]
+WantedBy=multi-user.target
