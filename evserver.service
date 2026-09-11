@@ -8,7 +8,7 @@ WorkingDirectory=/opt/evserver
 ExecStart=/usr/bin/java -jar /opt/evserver/evserver.jar --data-dir /var/lib/evserver/data
 Restart=on-failure
 RestartSec=10
-User=pi
+User=root
 Environment=JAVA_HOME=/usr/lib/jvm/java-25-openjdk-arm64
 
 [Install]
