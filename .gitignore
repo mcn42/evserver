@@ -1,6 +1,6 @@
 target/
 data/
-.log
+*.log
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
