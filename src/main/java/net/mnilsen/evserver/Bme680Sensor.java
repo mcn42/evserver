@@ -29,6 +29,7 @@ public final class Bme680Sensor {
         try {
             EnvironmentalReading reading = readHardware();
             AppLogger.LOGGER.debug("Read BME680 sensor successfully: {}", reading);
+            AppState.incrementUpdateCount();
             return reading;
         } catch (Exception | LinkageError e) {
             if (!simulateWhenUnavailable) {
@@ -37,6 +38,7 @@ public final class Bme680Sensor {
             }
             EnvironmentalReading simulated = readSimulated();
             AppLogger.LOGGER.warn("BME680 hardware read failed. Falling back to simulated data: {}", simulated, e);
+            AppState.incrementUpdateCount();
             return simulated;
         }
     }
@@ -126,7 +128,6 @@ public final class Bme680Sensor {
                 // in genuinely hot environments.
                 if (!Double.isFinite(temperatureC) || temperatureC < -40.0 || temperatureC > 60.0) {
                     AppLogger.LOGGER.warn("Suspicious BME680 temperature {}C — retrying reads", temperatureC);
-                    boolean ok = false;
                     int retries = 3;
                     for (int attempt = 1; attempt <= retries; attempt++) {
                         try {
@@ -164,7 +165,6 @@ public final class Bme680Sensor {
                         gasResistanceOhms = 45000.0 + ((rawGas & 0xFFFF) / 100.0d) * 2.5d;
 
                         if (Double.isFinite(temperatureC) && temperatureC >= -40.0 && temperatureC <= 60.0) {
-                            ok = true;
                             AppLogger.LOGGER.info("Recovered sane BME680 temperature on retry {}: {}C", attempt, temperatureC);
                             break;
                         }
@@ -177,10 +177,10 @@ public final class Bme680Sensor {
 
             return new EnvironmentalReading(
                     Instant.now(),
-                    roundToTwoDecimals(temperatureC),
-                    roundToTwoDecimals(pressureHpa),
-                    roundToTwoDecimals(humidityPercent),
-                    roundToTwoDecimals(gasResistanceOhms)
+                    Util.roundToTwoDecimals(temperatureC),
+                    Util.roundToTwoDecimals(pressureHpa),
+                    Util.roundToTwoDecimals(humidityPercent),
+                    Util.roundToTwoDecimals(gasResistanceOhms)
             );
         }
     }
@@ -203,14 +203,11 @@ public final class Bme680Sensor {
 
         return new EnvironmentalReading(
                 Instant.now(),
-                roundToTwoDecimals(temperatureC),
-                roundToTwoDecimals(pressureHpa),
-                roundToTwoDecimals(humidityPercent),
-                roundToTwoDecimals(gasResistanceOhms)
+                Util.roundToTwoDecimals(temperatureC),
+                Util.roundToTwoDecimals(pressureHpa),
+                Util.roundToTwoDecimals(humidityPercent),
+                Util.roundToTwoDecimals(gasResistanceOhms)
         );
     }
 
-    private static double roundToTwoDecimals(double value) {
-        return Math.round(value * 100.0) / 100.0;
-    }
 }

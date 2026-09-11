@@ -38,7 +38,7 @@ public final class JsonHttpServer implements AutoCloseable {
         });
 
         this.httpServer.createContext("/health", exchange -> {
-            String response = "{\"status\":\"ok\"}";
+            String response = AppState.getState().toJson();
             byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
             AppLogger.LOGGER.debug("Serving /health response");
             exchange.getResponseHeaders().set("Content-Type", "application/json");

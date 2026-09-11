@@ -19,10 +19,10 @@ public record EnvironmentalReading(
     public String toJson() {
         return "{"
                 + "\"timestamp\":\"" + timestamp + "\","
-                + "\"temperatureC\":" + formatDouble(temperatureC) + ","
-                + "\"pressureHpa\":" + formatDouble(pressureHpa) + ","
-                + "\"humidityPercent\":" + formatDouble(humidityPercent) + ","
-                + "\"gasResistanceOhms\":" + formatDouble(gasResistanceOhms)
+                + "\"temperatureC\":" + Util.formatDouble(temperatureC) + ","
+                + "\"pressureHpa\":" + Util.formatDouble(pressureHpa) + ","
+                + "\"humidityPercent\":" + Util.formatDouble(humidityPercent) + ","
+                + "\"gasResistanceOhms\":" + Util.formatDouble(gasResistanceOhms)
                 + "}";
     }
 
@@ -41,7 +41,4 @@ public record EnvironmentalReading(
         return "timestamp,temperatureC,pressureHpa,humidityPercent,gasResistanceOhms";
     }
 
-    private static String formatDouble(double value) {
-        return String.format(Locale.US, "%.2f", value);
-    }
 }

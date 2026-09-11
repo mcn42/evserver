@@ -12,7 +12,7 @@ public final class EvServerApplication {
     }
 
     public static void main(String[] args) throws Exception {
-        AppLogger.LOGGER.info("Starting EV server application...");
+        AppLogger.LOGGER.info(String.format("Starting EV server application at %s...", AppState.getStartupTime()));
         AppConfig config = AppConfig.fromArgs(args);
 
         Path dataDir = Path.of(config.dataDirectory());
@@ -20,19 +20,23 @@ public final class EvServerApplication {
 
         CsvDataStore dataStore = new CsvDataStore(dataDir);
         AtomicReference<EnvironmentalReading> latestReading = new AtomicReference<>();
-        Bme680Sensor sensor = new Bme680Sensor();
+        Bme680Sensor sensor = new Bme680Sensor(true);
 
         try (JsonHttpServer httpServer = new JsonHttpServer(config.httpPort(), latestReading)) {
             httpServer.start();
             AppLogger.LOGGER.info("HTTP server started on port {}", config.httpPort());
             AppLogger.LOGGER.info("CSV output file: {}", dataStore.filePath());
+            Path p = dataStore.filePath().normalize().toAbsolutePath();
+            AppState.setCurrentDataFile(p);
 
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
                 Thread thread = new Thread(r, "evserver-scheduler");
                 thread.setDaemon(true);
                 return thread;
             });
-
+            
+            AppState.setRunning(true);
+            
             Runnable task = () -> {
                 try {
                     EnvironmentalReading reading = sensor.read();
